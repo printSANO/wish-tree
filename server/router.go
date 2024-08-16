@@ -10,18 +10,11 @@ func setupRouter(handler *handlers.Handler) *gin.Engine {
 	router := gin.Default()
 	apiGroup := router.Group("/api/v1")
 	{
-		// User routes
-		userGroup := apiGroup.Group("/users")
-		{
-			userGroup.GET("/:id", handler.UserHandler.GetUser)
-			userGroup.POST("/", handler.UserHandler.CreateUser)
-		}
-
 		// Post routes
-		postGroup := apiGroup.Group("/posts")
+		postGroup := apiGroup.Group("/wishes")
 		{
-			postGroup.GET("/:id", handler.PostHandler.GetPost)
-			postGroup.POST("/", handler.PostHandler.CreatePost)
+			postGroup.GET("/:id", handler.WishHandler.GetWish)
+			postGroup.POST("/", handler.WishHandler.CreateWish)
 		}
 	}
 	return router

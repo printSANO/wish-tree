@@ -9,17 +9,17 @@ import (
 	"github.com/printSANO/wish-tree/services"
 )
 
-type PostHandler struct {
-	service services.PostService
+type WishHandler struct {
+	service services.WishService
 }
 
-func NewPostHandler(service services.PostService) *PostHandler {
-	return &PostHandler{service: service}
+func NewWishHandler(service services.WishService) *WishHandler {
+	return &WishHandler{service: service}
 }
 
-func (h *PostHandler) GetPost(c *gin.Context) {
+func (h *WishHandler) GetWish(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	post, err := h.service.GetPostByID(uint(id))
+	post, err := h.service.GetWishByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
 		return
@@ -27,7 +27,7 @@ func (h *PostHandler) GetPost(c *gin.Context) {
 	c.JSON(http.StatusOK, post)
 }
 
-func (h *PostHandler) CreatePost(c *gin.Context) {
+func (h *WishHandler) CreateWish(c *gin.Context) {
 	var postInput struct {
 		Title   string `json:"title"`
 		Content string `json:"content"`
@@ -38,12 +38,12 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	newPost := &models.Post{
+	newPost := &models.Wish{
 		Title:   postInput.Title,
 		Content: postInput.Content,
 	}
 
-	if err := h.service.CreatePost(newPost); err != nil {
+	if err := h.service.CreateWish(newPost); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create post"})
 		return
 	}

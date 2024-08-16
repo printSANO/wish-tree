@@ -25,8 +25,10 @@ func SetupDatabase() *gorm.DB {
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Post{})
-
+	// enum타입 생성
+	db.Exec("CREATE TYPE IF NOT EXISTS wish_status AS ENUM ('approved', 'pending', 'rejected');")
+	// AutoMigrate는 테이블이 없으면 생성하고, 필드가 없으면 추가함
+	db.AutoMigrate(&models.Wish{})
+	// db.AutoMigrate(&models.Comment{})
 	return db
 }
