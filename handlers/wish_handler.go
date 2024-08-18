@@ -19,34 +19,23 @@ func NewWishHandler(service services.WishService) *WishHandler {
 
 func (h *WishHandler) GetWish(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	post, err := h.service.GetWishByID(uint(id))
+	wish, err := h.service.GetWishByID(uint(id))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Wish not found"})
 		return
 	}
-	c.JSON(http.StatusOK, post)
+	c.JSON(http.StatusOK, wish)
 }
 
 func (h *WishHandler) CreateWish(c *gin.Context) {
-	var postInput struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
-	}
-
-	if err := c.BindJSON(&postInput); err != nil {
+	var wish models.Wish
+	if err := c.ShouldBindJSON(&wish); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	newPost := &models.Wish{
-		Title:   postInput.Title,
-		Content: postInput.Content,
-	}
-
-	if err := h.service.CreateWish(newPost); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create post"})
+	if err := h.service.CreateWish(&wish); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create wish"})
 		return
 	}
-
-	c.JSON(http.StatusOK, newPost)
+	c.JSON(http.StatusCreated, wish)
 }

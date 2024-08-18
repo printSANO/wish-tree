@@ -6,13 +6,14 @@ import (
 
 type WishStatus string
 
+// WishStatus는 enum 타입입니다.
 const (
 	Approved WishStatus = "approved"
 	Pending  WishStatus = "pending"
 	Rejected WishStatus = "rejected"
 )
 
-// gorm.model에는 ID, CreatedAt, UpdatedAt, DeletedAt이 포함되어 있음
+// gorm.model에는 ID, CreatedAt, UpdatedAt, DeletedAt이 포함되어 있습니다.
 type Wish struct {
 	gorm.Model
 	Title     string     `json:"title" gorm:"size:100"`

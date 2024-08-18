@@ -5,7 +5,7 @@ import (
 	"github.com/printSANO/wish-tree/handlers"
 )
 
-// 라우터 설정
+// setupRouter sets up the routes for the application.
 func setupRouter(handler *handlers.Handler) *gin.Engine {
 	router := gin.Default()
 	apiGroup := router.Group("/api/v1")

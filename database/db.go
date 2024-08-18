@@ -15,9 +15,9 @@ func SetupDatabase() *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		config.GetEnvVarAsString("DB_HOST", "localhost"),
-		config.GetEnvVarAsString("DB_USER", "ryan"),
-		config.GetEnvVarAsString("DB_PASSWORD", "1234"),
-		config.GetEnvVarAsString("DB_NAME", "go_gin_example"),
+		config.GetEnvVarAsString("DB_USER", "techeer"),
+		config.GetEnvVarAsString("DB_PASSWORD", "secret"),
+		config.GetEnvVarAsString("DB_NAME", "hackathon"),
 		config.GetEnvVarAsString("DB_PORT", "5432"),
 		config.GetEnvVarAsString("DB_SSLMODE", "disable"),
 	)
