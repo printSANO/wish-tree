@@ -1,0 +1,304 @@
+definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.PaginatedResponse-models_Wish:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Wish'
+        type: array
+      pagination:
+        $ref: '#/definitions/models.Pagination'
+    type: object
+  models.Pagination:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  models.Wish:
+    description: Wish object
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      is_confirm:
+        $ref: '#/definitions/models.WishStatus'
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.WishStatus:
+    enum:
+    - approved
+    - pending
+    - rejected
+    type: string
+    x-enum-varnames:
+    - Approved
+    - Pending
+    - Rejected
+info:
+  contact: {}
+paths:
+  /wishes:
+    post:
+      consumes:
+      - application/json
+      description: Create a new wish with the provided data
+      parameters:
+      - description: Wish data
+        in: body
+        name: wish
+        required: true
+        schema:
+          $ref: '#/definitions/models.Wish'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Wish'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create a new wish
+      tags:
+      - wishes
+  /wishes/{id}:
+    delete:
+      description: Delete a wish by its ID
+      parameters:
+      - description: Wish ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a wish
+      tags:
+      - wishes
+    get:
+      description: Retrieve a wish by its ID
+      parameters:
+      - description: Wish ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wish'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a wish by ID
+      tags:
+      - wishes
+    patch:
+      description: Update the status of a wish by its ID
+      parameters:
+      - description: Wish ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New status of the wish (approve/reject)
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wish'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Update the status of a wish
+      tags:
+      - wishes
+  /wishes/approved:
+    get:
+      description: Retrieve all wishes with the status 'approved'
+      parameters:
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Title
+        in: query
+        name: title
+        type: string
+      - description: Content
+        in: query
+        name: content
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedResponse-models_Wish'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get all approved wishes
+      tags:
+      - wishes
+  /wishes/pending:
+    get:
+      description: Retrieve all wishes with the status 'pending'
+      parameters:
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Title
+        in: query
+        name: title
+        type: string
+      - description: Content
+        in: query
+        name: content
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedResponse-models_Wish'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get all pending wishes
+      tags:
+      - wishes
+  /wishes/rejected:
+    get:
+      description: Retrieve all wishes with the status 'rejected'
+      parameters:
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Title
+        in: query
+        name: title
+        type: string
+      - description: Content
+        in: query
+        name: content
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedResponse-models_Wish'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get all rejected wishes
+      tags:
+      - wishes
+swagger: "2.0"
