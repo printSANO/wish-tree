@@ -30,12 +30,12 @@ const docTemplate = `{
                 "summary": "Create a comment",
                 "parameters": [
                     {
-                        "description": "Comment object",
+                        "description": "Comment content and wish ID",
                         "name": "comment",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Comment"
+                            "$ref": "#/definitions/models.CreateCommentRequest"
                         }
                     }
                 ],
@@ -136,7 +136,7 @@ const docTemplate = `{
         },
         "/wishes": {
             "post": {
-                "description": "Create a new wish with the provided data",
+                "description": "Create a new wish with the provided category, content, and title",
                 "consumes": [
                     "application/json"
                 ],
@@ -154,7 +154,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Wish"
+                            "$ref": "#/definitions/models.CreateWishRequest"
                         }
                     }
                 ],
@@ -545,6 +545,42 @@ const docTemplate = `{
                 "wish_id": {
                     "description": "The ID of the wish this comment belongs to.\n@Description The ID of the associated wish.\n@example 5",
                     "type": "integer"
+                }
+            }
+        },
+        "models.CreateCommentRequest": {
+            "description": "JSON body for creating a comment",
+            "type": "object",
+            "required": [
+                "content",
+                "wish_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "wish_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CreateWishRequest": {
+            "description": "JSON body for creating a wish",
+            "type": "object",
+            "required": [
+                "category",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },

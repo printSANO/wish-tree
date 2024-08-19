@@ -168,25 +168,34 @@ func (h *WishHandler) GetRejectedWishes(c *gin.Context) {
 
 // CreateWish godoc
 // @Summary Create a new wish
-// @Description Create a new wish with the provided data
+// @Description Create a new wish with the provided category, content, and title
 // @Tags wishes
 // @Accept json
 // @Produce json
-// @Param wish body models.Wish true "Wish data"
+// @Param wish body models.CreateWishRequest true "Wish data"
 // @Success 201 {object} models.Wish
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
 // @Router /wishes [post]
 func (h *WishHandler) CreateWish(c *gin.Context) {
-	var wish models.Wish
-	if err := c.ShouldBindJSON(&wish); err != nil {
+	// Create a variable of the input struct to validate the request body
+	var req models.CreateWishRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	wish := models.Wish{
+		Category: req.Category,
+		Content:  req.Content,
+		Title:    req.Title,
+	}
+
 	if err := h.service.CreateWish(&wish); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create wish"})
 		return
 	}
+
 	c.JSON(http.StatusCreated, wish)
 }
 

@@ -36,3 +36,10 @@ type CommentLimit struct {
 	// @example 1
 	Page int `json:"page" form:"page"`
 }
+
+// CreateCommentRequest is the input structure for creating a comment.
+// @Description JSON body for creating a comment
+type CreateCommentRequest struct {
+	Content string `json:"content" binding:"required"`
+	WishID  uint   `json:"wish_id" binding:"required"`
+}

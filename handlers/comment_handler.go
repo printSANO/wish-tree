@@ -47,20 +47,26 @@ func (h *CommentHandler) GetCommentsByWishID(c *gin.Context) {
 // @Tags comments
 // @Accept json
 // @Produce json
-// @Param comment body models.Comment true "Comment object"
+// @Param comment body models.CreateCommentRequest true "Comment content and wish ID"
 // @Success 201 {object} models.Comment
 // @Failure 400 {object} gin.H
 // @Router /comments [post]
 func (h *CommentHandler) CreateComment(c *gin.Context) {
-	var comment models.Comment
-	if err := c.ShouldBindJSON(&comment); err != nil {
+	var req models.CreateCommentRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	comment := models.Comment{
+		Content: req.Content,
+		WishID:  req.WishID,
+	}
+
 	if err := h.service.CreateComment(&comment); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})
 		return
 	}
+
 	c.JSON(http.StatusCreated, comment)
 }
 

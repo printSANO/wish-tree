@@ -40,6 +40,31 @@ definitions:
           @example 5
         type: integer
     type: object
+  models.CreateCommentRequest:
+    description: JSON body for creating a comment
+    properties:
+      content:
+        type: string
+      wish_id:
+        type: integer
+    required:
+    - content
+    - wish_id
+    type: object
+  models.CreateWishRequest:
+    description: JSON body for creating a wish
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - category
+    - content
+    - title
+    type: object
   models.PaginatedResponse-models_Comment:
     properties:
       data:
@@ -127,12 +152,12 @@ paths:
       - application/json
       description: Create a new comment
       parameters:
-      - description: Comment object
+      - description: Comment content and wish ID
         in: body
         name: comment
         required: true
         schema:
-          $ref: '#/definitions/models.Comment'
+          $ref: '#/definitions/models.CreateCommentRequest'
       produces:
       - application/json
       responses:
@@ -203,14 +228,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new wish with the provided data
+      description: Create a new wish with the provided category, content, and title
       parameters:
       - description: Wish data
         in: body
         name: wish
         required: true
         schema:
-          $ref: '#/definitions/models.Wish'
+          $ref: '#/definitions/models.CreateWishRequest'
       produces:
       - application/json
       responses:

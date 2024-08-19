@@ -50,6 +50,14 @@ type Wish struct {
 	IsConfirm WishStatus `json:"is_confirm" gorm:"type:wish_status;default:'pending'"`
 }
 
+// CreateWishRequest is the input structure for creating a wish.
+// @Description JSON body for creating a wish
+type CreateWishRequest struct {
+	Category string `json:"category" binding:"required"`
+	Content  string `json:"content" binding:"required"`
+	Title    string `json:"title" binding:"required"`
+}
+
 type Filter struct {
 	Category string `json:"category" form:"category"`
 	Title    string `json:"title" form:"title"`
