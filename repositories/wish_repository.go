@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"log"
+
 	"github.com/printSANO/wish-tree/models"
 	"gorm.io/gorm"
 )
@@ -24,9 +26,10 @@ func NewWishRepository(db *gorm.DB) WishRepository {
 func (r *wishRepository) GetAll(status models.WishStatus, filter models.Filter) ([]*models.Wish, int64, error) {
 	var wishes []*models.Wish
 	var totalCount int64
-
+	log.Println("Status: ", status)
 	// Base query with status
 	query := r.db.Where("is_confirm = ?", status)
+	log.Println("Query: ", query)
 
 	// Apply filters
 	if filter.Category != "" {

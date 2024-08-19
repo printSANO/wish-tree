@@ -35,7 +35,7 @@ func setupRouter(handler *handlers.Handler) *gin.Engine {
 			postGroup.GET("/:id", handler.WishHandler.GetWish)
 			postGroup.GET("/pending", handler.WishHandler.GetPendingWishes)
 			postGroup.GET("/approved", handler.WishHandler.GetApprovedWishes)
-			postGroup.GET("/rejected", handler.WishHandler.GetPendingWishes)
+			postGroup.GET("/rejected", handler.WishHandler.GetRejectedWishes)
 			postGroup.PATCH("/:id", handler.WishHandler.UpdateWish)
 			postGroup.DELETE("/:id", handler.WishHandler.DeleteWish)
 			postGroup.POST("/", handler.WishHandler.CreateWish)
