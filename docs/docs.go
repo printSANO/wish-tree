@@ -15,6 +15,125 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/comments": {
+            "post": {
+                "description": "Create a new comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Create a comment",
+                "parameters": [
+                    {
+                        "description": "Comment object",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}": {
+            "delete": {
+                "description": "Delete a comment by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Delete a comment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{wish_id}": {
+            "get": {
+                "description": "Retrieve comments for a wish by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Get comments by wish ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Wish ID",
+                        "name": "wish_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PaginatedResponse-models_Comment"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/wishes": {
             "post": {
                 "description": "Create a new wish with the provided data",
@@ -395,6 +514,54 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Comment": {
+            "description": "A comment that belongs to a wish.",
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "The content of the comment.\n@Description The actual text of the comment.\n@example This is a great wish!",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "wish": {
+                    "description": "The associated wish.\n@Description The Wish object that this comment is associated with.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Wish"
+                        }
+                    ]
+                },
+                "wish_id": {
+                    "description": "The ID of the wish this comment belongs to.\n@Description The ID of the associated wish.\n@example 5",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PaginatedResponse-models_Comment": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Comment"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/models.Pagination"
+                }
+            }
+        },
         "models.PaginatedResponse-models_Wish": {
             "type": "object",
             "properties": {
@@ -424,13 +591,15 @@ const docTemplate = `{
             }
         },
         "models.Wish": {
-            "description": "Wish object",
+            "description": "Wish object containing details of a user's wish.",
             "type": "object",
             "properties": {
                 "category": {
+                    "description": "The category of the wish, which groups similar wishes together.\n@Description Category of the wish.\n@example General",
                     "type": "string"
                 },
                 "content": {
+                    "description": "The content or detailed description of the wish.\n@Description Detailed content of the wish.\n@example This is the content of my wish.",
                     "type": "string"
                 },
                 "createdAt": {
@@ -443,9 +612,15 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "is_confirm": {
-                    "$ref": "#/definitions/models.WishStatus"
+                    "description": "The current status of the wish (approved, pending, rejected).\n@Description Status of the wish.\n@Enum approved\n@Enum pending\n@Enum rejected\n@example pending",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.WishStatus"
+                        }
+                    ]
                 },
                 "title": {
+                    "description": "The title of the wish.\n@Description Title of the wish.\n@example A wish",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -454,6 +629,7 @@ const docTemplate = `{
             }
         },
         "models.WishStatus": {
+            "description": "Status of the wish",
             "type": "string",
             "enum": [
                 "approved",

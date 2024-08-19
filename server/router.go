@@ -30,6 +30,14 @@ func setupRouter(handler *handlers.Handler) *gin.Engine {
 			postGroup.DELETE("/:id", handler.WishHandler.DeleteWish)
 			postGroup.POST("/", handler.WishHandler.CreateWish)
 		}
+
+		// Comment routes
+		commentGroup := apiGroup.Group("/comments")
+		{
+			commentGroup.GET("/:wish_id", handler.CommentHandler.GetCommentsByWishID)
+			commentGroup.POST("/", handler.CommentHandler.CreateComment)
+			commentGroup.DELETE("/:id", handler.CommentHandler.DeleteComment)
+		}
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return router

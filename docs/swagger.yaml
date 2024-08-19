@@ -10,6 +10,45 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  models.Comment:
+    description: A comment that belongs to a wish.
+    properties:
+      content:
+        description: |-
+          The content of the comment.
+          @Description The actual text of the comment.
+          @example This is a great wish!
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      updatedAt:
+        type: string
+      wish:
+        allOf:
+        - $ref: '#/definitions/models.Wish'
+        description: |-
+          The associated wish.
+          @Description The Wish object that this comment is associated with.
+      wish_id:
+        description: |-
+          The ID of the wish this comment belongs to.
+          @Description The ID of the associated wish.
+          @example 5
+        type: integer
+    type: object
+  models.PaginatedResponse-models_Comment:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      pagination:
+        $ref: '#/definitions/models.Pagination'
+    type: object
   models.PaginatedResponse-models_Wish:
     properties:
       data:
@@ -29,11 +68,19 @@ definitions:
         type: integer
     type: object
   models.Wish:
-    description: Wish object
+    description: Wish object containing details of a user's wish.
     properties:
       category:
+        description: |-
+          The category of the wish, which groups similar wishes together.
+          @Description Category of the wish.
+          @example General
         type: string
       content:
+        description: |-
+          The content or detailed description of the wish.
+          @Description Detailed content of the wish.
+          @example This is the content of my wish.
         type: string
       createdAt:
         type: string
@@ -42,13 +89,26 @@ definitions:
       id:
         type: integer
       is_confirm:
-        $ref: '#/definitions/models.WishStatus'
+        allOf:
+        - $ref: '#/definitions/models.WishStatus'
+        description: |-
+          The current status of the wish (approved, pending, rejected).
+          @Description Status of the wish.
+          @Enum approved
+          @Enum pending
+          @Enum rejected
+          @example pending
       title:
+        description: |-
+          The title of the wish.
+          @Description Title of the wish.
+          @example A wish
         type: string
       updatedAt:
         type: string
     type: object
   models.WishStatus:
+    description: Status of the wish
     enum:
     - approved
     - pending
@@ -61,6 +121,84 @@ definitions:
 info:
   contact: {}
 paths:
+  /comments:
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment
+      parameters:
+      - description: Comment object
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create a comment
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      description: Delete a comment by its ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a comment
+      tags:
+      - comments
+  /comments/{wish_id}:
+    get:
+      description: Retrieve comments for a wish by its ID
+      parameters:
+      - description: Wish ID
+        in: path
+        name: wish_id
+        required: true
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedResponse-models_Comment'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get comments by wish ID
+      tags:
+      - comments
   /wishes:
     post:
       consumes:

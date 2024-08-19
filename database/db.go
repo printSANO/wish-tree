@@ -33,7 +33,7 @@ func SetupDatabase() *gorm.DB {
 	db.AutoMigrate(&models.Wish{})
 	log.Println("AutoMigrate wish table")
 
-	// db.AutoMigrate(&models.Comment{})
-	// log.Println("AutoMigrate comment table")
+	db.AutoMigrate(&models.Comment{})
+	log.Println("AutoMigrate comment table")
 	return db
 }

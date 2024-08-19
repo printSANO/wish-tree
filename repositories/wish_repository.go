@@ -30,7 +30,7 @@ func (r *wishRepository) GetAll(status models.WishStatus, filter models.Filter) 
 
 	// Apply filters
 	if filter.Category != "" {
-		query = query.Where("category LIKE ?", "%"+filter.Category+"%")
+		query = query.Where("category = ?", "%"+filter.Category+"%")
 	}
 	if filter.Title != "" {
 		query = query.Where("title LIKE ?", "%"+filter.Title+"%")

@@ -4,13 +4,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type WishStatus string
-
 // WishStatus represents the status of a wish.
 // @Description Status of the wish
 // @Enum approved
 // @Enum pending
 // @Enum rejected
+type WishStatus string
+
 const (
 	Approved WishStatus = "approved"
 	Pending  WishStatus = "pending"
@@ -18,18 +18,35 @@ const (
 )
 
 // Wish represents a wish object in the system.
-// @Description Wish object
+// @Description Wish object containing details of a user's wish.
 // @ID wish
-// @Property title string "Title of the wish" example("A wish")
-// @Property content string "Content of the wish" example("This is the content")
-// @Property category string "Category of the wish" example("General")
-// @Property is_confirm string "Status of the wish" example("approved")
-// @Property is_deleted bool "Indicates if the wish is deleted" example(false)
 type Wish struct {
+	// The unique ID of the wish.
+	// @Description The auto-incrementing ID of the wish.
+	// @example 1
 	gorm.Model
-	Title     string     `json:"title" gorm:"size:100"`
-	Content   string     `json:"content" gorm:"size:255"`
-	Category  string     `json:"category" gorm:"size:50"`
+
+	// The title of the wish.
+	// @Description Title of the wish.
+	// @example A wish
+	Title string `json:"title" gorm:"size:100"`
+
+	// The content or detailed description of the wish.
+	// @Description Detailed content of the wish.
+	// @example This is the content of my wish.
+	Content string `json:"content" gorm:"size:255"`
+
+	// The category of the wish, which groups similar wishes together.
+	// @Description Category of the wish.
+	// @example General
+	Category string `json:"category" gorm:"size:50"`
+
+	// The current status of the wish (approved, pending, rejected).
+	// @Description Status of the wish.
+	// @Enum approved
+	// @Enum pending
+	// @Enum rejected
+	// @example pending
 	IsConfirm WishStatus `json:"is_confirm" gorm:"type:wish_status;default:'pending'"`
 }
 
