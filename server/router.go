@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	docs "github.com/printSANO/wish-tree/docs"
 	"github.com/printSANO/wish-tree/handlers"
@@ -11,6 +12,15 @@ import (
 // setupRouter sets up the routes for the application.
 func setupRouter(handler *handlers.Handler) *gin.Engine {
 	router := gin.Default()
+
+	// CORS middleware 다 허용
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	docs.SwaggerInfo.Title = "Wish API"
 	docs.SwaggerInfo.Description = "This is a sample server for a Wish API."
