@@ -15,6 +15,10 @@ go gin 으로 만든 "Techeer Tree: 소원을 빌어봐" 해커톤 백엔드 예
 - Swaggo (스웨거)
 - Gorm (ORM)
 
+## 참고해야 하는 내용
+- `is_confirmed`는 `enum`으로 처리가 되있습니다.
+- 기본적으로 `pending`으로 설정이 되고 승인으로 바꾸고 싶으면 /wishes/id [patch] 엔드포인트에서 `status`를 `approve`나 `reject`로 해주시면 `status`가 `approved`아니면 `rejected`로 바뀝니다.
+- 그 외 값들은 안되는 점 유의해주세요.
 
 ## 만든이
 - printSANO Ryan Lee
